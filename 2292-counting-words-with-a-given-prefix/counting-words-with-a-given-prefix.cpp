@@ -1,5 +1,6 @@
 class Solution {
 public:
+    // trie-solution
     class TrieNode {
         public:
             char value;
