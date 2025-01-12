@@ -1,6 +1,6 @@
 class Solution {
 public:
-    bool solve(vector<vector<pair<int, int>>>& graph, int mx, int n, int threshold) {
+    bool solve(vector<pair<int, int>> graph[], int mx, int n) {
         vector<int> visited(n, false);
         queue<int> q;
         q.push(0);
@@ -24,7 +24,7 @@ public:
     }
 
     int minMaxWeight(int n, vector<vector<int>>& edges, int threshold) {
-        vector<vector<pair<int, int>>> graph(n);
+        vector<pair<int, int>> graph[n];
 
         int low = 0, high = 0, ans = -1;
         for(auto val : edges) {
@@ -34,7 +34,7 @@ public:
 
         while(low <= high) {
             int mid = low + (high - low) / 2;
-            if(solve(graph, mid, n, threshold)) {
+            if(solve(graph, mid, n)) {
                 ans = mid;
                 high = mid - 1;
             }
