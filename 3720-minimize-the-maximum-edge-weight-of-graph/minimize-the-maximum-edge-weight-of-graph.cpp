@@ -6,7 +6,6 @@ public:
         q.push(0);
         visited[0] = true;
 
-        vector<int> outgoing(n, 0);
         int nodes = 0;
         while(!q.empty()) {
             auto topval = q.front();
@@ -14,8 +13,7 @@ public:
 
             nodes++;
             for(auto [nbr, wt] : graph[topval]) {
-                if(!visited[nbr] && outgoing[nbr] < threshold && wt <= mx) {
-                    outgoing[nbr]++;
+                if(!visited[nbr] && wt <= mx) {
                     visited[nbr] = true;
                     q.push(nbr);
                 }
