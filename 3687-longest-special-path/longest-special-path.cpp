@@ -1,7 +1,7 @@
 class Solution {
 public:
     vector<int> nums;
-    int ans = 0, count = 1;
+    pair<int, int> ans = {0, -1};
     vector<int> depth;
 
     void dfs(int node, int par, vector<vector<pair<int, int>>>& graph, int left, int curr_level, vector<int>& pre) {
@@ -9,13 +9,7 @@ public:
         depth[nums[node]] = curr_level;
 
         left = max(left, prev_level);
-        if(pre.back() - pre[left] >= ans) {
-            if(pre.back() - pre[left] == ans) count = min(count, curr_level - left);
-            else {
-                ans = pre.back() - pre[left];
-                count = curr_level - left;
-            }
-        }
+        ans = max(ans, {pre.back() - pre[left], -(curr_level - left)});
 
         for(auto [nbr, wt] : graph[node]) {
             if(nbr != par) {
@@ -42,6 +36,6 @@ public:
         depth = vector<int>(50100, 0);
         dfs(0, -1, graph, 0, 1, pre);
 
-        return {ans, count};
+        return {ans.first, -ans.second};
     }
 };
