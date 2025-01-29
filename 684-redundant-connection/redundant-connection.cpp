@@ -58,23 +58,14 @@ public:
     vector<int> findRedundantConnection(vector<vector<int>>& edges) {
         int n = edges.size();
         
-        for(int i = n - 1; i >= 0; i--) {
-            DisjointSet dsu(n + 1);
-
-            for(int j = 0; j < n; j++) {
-                if(i != j) {
-                    dsu.unionByRank(edges[j][0], edges[j][1]);
-                }
+        DisjointSet dsu(n + 1);
+        for(int i = 0; i < n; i++) {
+            int u = edges[i][0], v = edges[i][1];
+            if(dsu.findPar(u) == dsu.findPar(v)) {
+                return {u, v};
             }
 
-            set<int> st;
-            for(int i = 1; i <= n; i++) {
-                st.insert(dsu.findPar(i));
-            }
-
-            if(st.size() == 1) {
-                return {edges[i][0], edges[i][1]};
-            }
+            dsu.unionByRank(u, v);
         }
 
         return {};
