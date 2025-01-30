@@ -1,71 +1,31 @@
-#define ll long long 
-
-class DisjointSet {
-public:
- 
-	vector<ll> rank, parent, size;
- 
-	DisjointSet(ll n) {
-		rank.resize(n + 1, 0);
-		parent.resize(n + 1);
-		size.resize(n + 1, 1);
-		for(ll i = 1; i <= n; i++) parent[i] = i;
-	}
- 
-	void unionByRank(ll x, ll y) {
- 
-		ll par_x = findPar(x);
-		ll par_y = findPar(y);
- 
-		if(par_x == par_y) return;
- 
-		if(rank[par_x] < rank[par_y]) {
-			parent[par_x] = par_y;
-		} else if(rank[par_y] < rank[par_x]) {
-			parent[par_y] = par_x;
-		} else {
-			parent[par_x] = par_y;
-			rank[par_y]++;
-		}
-	}
- 
-	void unionBySize(ll x, ll y) {
- 
-		ll par_x = findPar(x);
-		ll par_y = findPar(y);
- 
-		if(par_x == par_y) return;
- 
-		if(size[par_x] < size[par_y]) {
-			parent[par_x] = par_y;
-			size[par_y] += size[par_x];
-		} else {
-			parent[par_y] = par_x;
-			size[par_x] += size[par_y];
-		}
-	}
- 
-	ll findPar(ll x) {
- 
-		if(parent[x] == x) return x;
- 
-		return parent[x] = findPar(parent[x]);
-	}
-};
-
 class Solution {
 public:
+    bool same(int n, vector<vector<int>>& graph, int v, vector<bool>& visited) {
+        if(n == v) return true;
+        visited[n] = true;
+
+        for(auto nbr : graph[n]) {
+            if(!visited[nbr]) {
+                if(same(nbr, graph, v, visited)) return true;;
+            }
+        }
+
+        return false;
+    }
+
     vector<int> findRedundantConnection(vector<vector<int>>& edges) {
         int n = edges.size();
-        
-        DisjointSet dsu(n + 1);
+
+        vector<vector<int>> graph(n + 1);
         for(int i = 0; i < n; i++) {
             int u = edges[i][0], v = edges[i][1];
-            if(dsu.findPar(u) == dsu.findPar(v)) {
+            vector<bool> visited(n + 1, false);
+            if(same(u, graph, v, visited)) {
                 return {u, v};
             }
 
-            dsu.unionByRank(u, v);
+            graph[u].push_back(v);
+            graph[v].push_back(u);
         }
 
         return {};
