@@ -1,61 +1,42 @@
+bool done = false;
+vector<int> prime;
+
 class Solution {
 public:
-    bool isPrime(int n) {
-  
-    // Check if n is 1 or 0
-    if (n <= 1)
-        return false;
+    const int N = 1e6 + 5;
 
-    // Check if n is 2 or 3
-    if (n == 2 || n == 3)
-        return true;
-
-    // Check whether n is divisible by 2 or 3
-    if (n % 2 == 0 || n % 3 == 0)
-        return false;
-    
-    // Check from 5 to square root of n
-    // Iterate i by (i+6)
-    for (int i = 5; i <= sqrt(n); i = i + 6)
-        if (n % i == 0 || n % (i + 2) == 0)
-            return false;
-
-    return true;
-}
-    vector<int> closestPrimes(int left, int right) {
-        
-        int num1=-1,num2=-1;
-        int last_prime;
-        for(int i=left;i<=right;i++)
-        {
-            if(isPrime(i))
-            {
-                if(num1==-1)
-                {
-                    num1=i;
-                }
-                else if( num2==-1)
-                {
-                    num2=i;
-                }
-                else
-                {
-                    if(num2-num1<=2)
-                    break;
-                    if(i-last_prime<num2-num1)
-                    {
-                        num1=last_prime;
-                        num2=i;
-                    }
-                }
-                last_prime=i;
+    void seive() {
+        vector<bool> primes(N, true);
+        primes[0] = primes[1] = false;
+        for(int i = 2; i < N; i++) {
+            if(primes[i]) {
+                for(int j = 2 * i; j < N; j += i) 
+                    primes[j] = false;
             }
         }
-        if(num1!=-1 && num2!=-1)
-        {
-            return {num1,num2};
+
+        for(int i = 0; i < N; i++) {
+            if(primes[i]) prime.push_back(i);
         }
-        return {-1,-1};
-        
+    }
+
+    vector<int> closestPrimes(int left, int right) {
+        if(!done) {
+            done = true;
+            seive();
+        }
+
+        int diff = INT_MAX;
+        vector<int> ans = {-1, -1};
+        for(int i = 0; i < prime.size(); i++) {
+            if(prime[i] >= left && (i + 1 < prime.size() && prime[i + 1] <= right)) {
+                if(prime[i + 1] - prime[i] < diff) {
+                    diff = prime[i + 1] - prime[i];
+                    ans = {prime[i], prime[i + 1]};
+                }
+            }
+        }
+
+        return ans;
     }
 };
